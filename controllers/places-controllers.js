@@ -8,9 +8,16 @@ const Place = require('../models/place');
 
 let PLACES = require('../data').DUMMY_PLACES;
 
-exports.getPlacesByUserId = (req,res,next) => {
+exports.getPlacesByUserId = async (req,res,next) => {
     const userId = req.params.uid;
-    const places = PLACES.filter(place => place.creator === userId);
+    // const places = PLACES.filter(place => place.creator === userId);
+    
+    let places;
+    try{
+        places = await Place.find({ creator: userId });
+    }catch(err){
+        return next( new HttpError('Something went wrong, could not find a place' ,500) );
+    }
 
     if(places.length === 0){
         throw new HttpError('Could not find places for the provided user id', 404);
@@ -18,9 +25,16 @@ exports.getPlacesByUserId = (req,res,next) => {
     res.json({message: 'Your places', places: places});
 };
 
-exports.getPlaceById = (req,res,next)=> {
+exports.getPlaceById = async (req,res,next)=> {
     const placeId = req.params.pid;
-    const place = PLACES.find(p => p.id === placeId);
+    // const place = PLACES.find(p => p.id === placeId);
+
+    let place;
+    try{
+        place = await Place.findById(placeId);
+    }catch(err){
+        return next( new HttpError('Something went wrong, could not find a place' ,500) );
+    }
 
     if(!place){
         return next( new HttpError('Could not find a place for the provided id' ,404) );
@@ -73,27 +87,54 @@ exports.postPlace = async (req,res,next) => {
 }
 ////  mongodb+srv://<username>:<password>@francois-db-c0gfm.mongodb.net/<DBNAME>?retryWrites=true&w=majority
 
-exports.patchPlace = (req,res,next) => {
+exports.patchPlace = async (req,res,next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        throw new HttpError('Invalid inputs, please check your data.', 422);
+        return next( new HttpError('Invalid inputs, please check your data.', 422) );
     }
     const { title, description } = req.body;
     const placeId = req.params.pid;
 
-    const updatedPlace = PLACES.find(p => p.id === placeId);
-    const placeIndex = PLACES.findIndex(p => p.id === placeId);
+    // const updatedPlace = PLACES.find(p => p.id === placeId);
+    // const placeIndex = PLACES.findIndex(p => p.id === placeId);
+
+    let updatedPlace
+    try{
+        updatedPlace = await Place.findById(placeId);
+    }catch(err){
+        return next( new HttpError('Something went wrong, could not find a place' ,500) );
+    }
+
     updatedPlace.title = title;
     updatedPlace.description = description;
 
-    PLACES[placeIndex] = updatedPlace;
+    // PLACES[placeIndex] = updatedPlace;
+
+    try{
+        await updatedPlace.save();
+    }catch(err){
+        return next( new HttpError('Something went wrong, could not find a place' ,500) );
+    }
 
     res.status(200).json({place: updatedPlace, message: 'Update place'});
 };
 
-exports.deletePlace = (req,res,next) => {
+exports.deletePlace = async (req,res,next) => {
     const placeId = req.params.pid;
-    PLACES = PLACES.filter(p => p.id !== placeId);
-    // .remove()
-    res.status(200).json({place: PLACES, message: 'Delete place'});
+    // PLACES = PLACES.filter(p => p.id !== placeId);
+
+    let place;
+    try{
+        place = await Place.findById(placeId);
+    }catch(err){
+        return next( new HttpError('Something went wrong, could not delete this place', 500) );
+    }
+
+    try{
+        await place.remove();
+    }catch(err){
+        return next( new HttpError('Something went wrong, could not delete place', 500) )
+    }
+
+    res.status(200).json({message: 'Delete place'});
 }
