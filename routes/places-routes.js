@@ -7,16 +7,10 @@ router.get('/user/:uid', placesControllers.getPlacesByUserId );
 
 router.get('/:pid', placesControllers.getPlaceById );
 
-router.post('/', (req,res,next)=> {
-    res.json({});
-});
+router.post('/', placesControllers.postPlace );
 
-router.patch('/:pid', (req,res,next)=> {
-    res.json({});
-});
+router.patch('/:pid', placesControllers.patchPlace);
 
-router.delete('/:pid', (req,res,next)=> {
-    res.json({});
-})
+router.delete('/:pid', placesControllers.deletePlace)
 
 module.exports = router;
