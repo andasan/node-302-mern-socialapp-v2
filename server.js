@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const HttpError = require('./models/http-error');
 
@@ -19,7 +20,6 @@ app.use((req,res,next) => {
     throw new HttpError('Could not find this route', 404,);
 });
 
-
 app.use((error,req,res,next) => {
     if(res.headerSent){
         return next(error);
@@ -27,4 +27,11 @@ app.use((error,req,res,next) => {
     res.status(error.code || 500).json({message: error.message || 'An unknown error occurred'})
 });
 
-app.listen(PORT);
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(()=>{
+        console.log('Connected to Database');
+        app.listen(PORT);
+    })
+    .catch(err => {
+        console.log(err);
+    });
