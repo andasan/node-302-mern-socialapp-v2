@@ -22,7 +22,7 @@ exports.getPlacesByUserId = async (req,res,next) => {
         return next( new HttpError('Something went wrong, could not find a place' ,500) );
     }
 
-    if(userWithPlaces.length === 0){
+    if(!userWithPlaces || userWithPlaces.length === 0){
         return next( new HttpError('Could not find places for the provided user id', 404));
     }
     res.json({message: 'Your places', places: userWithPlaces});
