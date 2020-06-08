@@ -1,12 +1,14 @@
-const {v4: uuidv4 } = require('uuid');
+// const {v4: uuidv4 } = require('uuid');
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 
 const HttpError = require('../models/http-error');
 const getCoordsFromAddress = require('../util/location');
 
 const Place = require('../models/place');
+const User = require('../models/user');
 
-let PLACES = require('../data').DUMMY_PLACES;
+// let PLACES = require('../data').DUMMY_PLACES;
 
 exports.getPlacesByUserId = async (req,res,next) => {
     const userId = req.params.uid;
@@ -77,8 +79,26 @@ exports.postPlace = async (req,res,next) => {
         creator
     });
 
+    let user;
     try{
-        await createdPlace.save();
+        user = await User.findById(creator);
+    }catch(err){
+        return next(new HttpError('Creating place failed, please try again', 500))
+    }
+
+    if(!user){
+        return next(new HttpError('Could not find user for provided id', 404));
+    }
+
+    try{
+        // await createdPlace.save();
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await createdPlace.save({session:sess}); //created the unique place id
+        user.places.push(createdPlace); // push: establishing connection between 2 models
+        await user.save({session:sess});
+        await sess.commitTransaction();
+
     }catch(err){
         return next(new HttpError('Creating place failed, please try again.', 500));
     }
