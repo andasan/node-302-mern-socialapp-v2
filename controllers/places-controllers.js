@@ -20,7 +20,7 @@ exports.getPlacesByUserId = async (req,res,next) => {
     }
 
     if(places.length === 0){
-        throw new HttpError('Could not find places for the provided user id', 404);
+        return next( new HttpError('Could not find places for the provided user id', 404));
     }
     res.json({message: 'Your places', places: places});
 };
@@ -73,7 +73,7 @@ exports.postPlace = async (req,res,next) => {
         description,
         address,
         location: coordinates,
-        imageUrl: 'https://images.unsplash.com/photo-1459983001447-eea6d4fbfbb1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1352&q=80',
+        imageUrl: 'https://images.unsplash.com/photo-1536098561742-ca998e48cbcc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1362&q=80',
         creator
     });
 
