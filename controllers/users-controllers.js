@@ -20,7 +20,7 @@ exports.signup = async (req,res,next) => {
     if(!errors.isEmpty()){
         return next( new HttpError(errors.array()[0].msg, 422));
     }
-    const { username, email, password, places } = req.body;
+    const { username, email, password } = req.body;
 
     // const hasUser = USERS.find(u => u.email === email);
     // if(hasUser){
@@ -43,7 +43,7 @@ exports.signup = async (req,res,next) => {
         email,
         imageUrl: 'https://images.unsplash.com/photo-1520315342629-6ea920342047?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1000&q=80',
         password,
-        places
+        places: []
     });
 
     try{

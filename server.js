@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const HttpError = require('./models/http-error');
 
@@ -12,6 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(bodyParser.json({extended: false}));
+app.use(cors());
 
 app.use('/api/places', placesRoutes) //route for places
 app.use('/api/users', usersRoutes) //route for users

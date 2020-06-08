@@ -36,6 +36,33 @@ const Auth = () => {
       ),
   });
 
+  const authSubmitHandler = async (values) => {
+    // console.log('from custom handler: ', values);
+
+    if(isLoginMode){
+
+    }else{
+      try{
+        const response = await fetch('http://localhost:5000/api/users/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            username:values.username,
+            email: values.email,
+            password: values.password
+          })
+        });
+
+        const responseData = await response.json();
+
+        console.log('response: ', responseData);
+        dispatch({ type: "LOGIN" });
+      }catch(err){
+        console.log(err);
+      }
+    }
+  }
+
   return (
     <>
       <Formik
@@ -46,10 +73,12 @@ const Auth = () => {
           confirmPassword: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={(values, { setSubmitting, resetForm }) => {
+        onSubmit={(values, { setSubmitting, resetForm, submitForm }) => {
           setSubmitting(false);
           resetForm();
-          dispatch({ type: "LOGIN" });
+          submitForm();
+          authSubmitHandler(values);
+          // dispatch({ type: "LOGIN" });
         }}
       >
         {(props) => {
