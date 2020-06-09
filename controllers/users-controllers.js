@@ -68,7 +68,7 @@ exports.login = async (req,res,next) => {
     }
 
     if(!existingUser || existingUser.password !== password){
-        return next( new HttpError('Could not identify use. Incorrect credentials', 401));
+        return next( new HttpError('Invalid credentials', 401));
     }
 
     res.status(200).json({message: 'Logged in!'});
