@@ -9,7 +9,7 @@ const CustomTextInput = ({ label, ...props }) => {
     return (
       <div className="input-field col s12">
         <input {...field} {...props} />
-        <label className="white-text active" htmlFor={props.id || props.name}>
+        <label className="white-text active" htmlFor={props._id || props.name}>
           {label}
         </label>
         {meta.touched && meta.error ? (
@@ -23,7 +23,7 @@ const CustomTextInput = ({ label, ...props }) => {
     return (
       <div className="input-field col s12">
         <input {...field} {...props} />
-        <label className="white-text active" htmlFor={props.id || props.name}>
+        <label className="white-text active" htmlFor={props._id || props.name}>
           {label}
         </label>
         {meta.touched && meta.error ? (
@@ -37,7 +37,7 @@ const CustomTextInput = ({ label, ...props }) => {
   return (
     <div className="input-field col s12">
       <TextareaAutosize className="materialize-textarea" {...field} {...props} id="text-area" />
-      <label className="white-text active" htmlFor={props.id || props.name}>
+      <label className="white-text active" htmlFor={props._id || props.name}>
         {label}
       </label>
       {meta.touched && meta.error ? (

@@ -51,7 +51,7 @@ const Input = (props) => {
     props.element === "input" ? (
         <div className="input-field col s12">
           <input
-            id={props.id}
+            id={props._id}
             type={props.type}
             className={`validate ${
               !inputState.isValid && inputState.isTouched && "invalid"
@@ -64,7 +64,7 @@ const Input = (props) => {
     ) : (
         <div className="input-field col s12">
           <textarea
-            id={props.id}
+            id={props._id}
             rows={props.row || 6}
             className={`materialize-textarea validate ${
               !inputState.isValid && inputState.isTouched && "invalid"
@@ -81,7 +81,7 @@ const Input = (props) => {
     <div className="input-field col s12">
       {element}
       {!inputState.isValid && inputState.isTouched && <p>{props.errorText}</p>}
-      <label className="active white-text" htmlFor={props.id}>
+      <label className="active white-text" htmlFor={props._id}>
         {props.label}
       </label>
     </div>

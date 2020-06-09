@@ -112,7 +112,7 @@ const PlaceItem = (props) => {
             {isLoggedIn && <div className="card-options">
               <i
                 className="material-icons clickable"
-                onClick={() => editHandler(props.id)}
+                onClick={() => editHandler(props._id)}
               >
                 mode_edit
               </i>

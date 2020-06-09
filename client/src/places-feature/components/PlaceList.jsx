@@ -29,7 +29,7 @@ const PlaceList = (props) => {
   return (
     <div className="row center">
       {props.places.map((place) => (
-        <PlaceItem key={place.id} {...place} />
+        <PlaceItem key={place._id} {...place} />
       ))}
     </div>
   );
