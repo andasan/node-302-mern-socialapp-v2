@@ -7,7 +7,9 @@ import PlaceItem from "./PlaceItem";
 const PlaceList = (props) => {
   const isLoggedIn = useSelector(state => state.isLoggedIn);
 
-  if (props.places.length === 0) {
+  console.log('PLACELIST: ', props);
+
+  if (props.places.places.length === 0) {
     return (
       <div className="row center">
         {isLoggedIn ? (
@@ -28,7 +30,7 @@ const PlaceList = (props) => {
 
   return (
     <div className="row center">
-      {props.places.map((place) => (
+      {props.places.places.map((place) => (
         <PlaceItem key={place._id} {...place} />
       ))}
     </div>

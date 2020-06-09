@@ -10,12 +10,14 @@ import {
   CustomStylesSpinner,
   CustomStylesError,
 } from "../../shared/components/CustomStyles";
+import { useHttpClient } from "../../shared/hooks/HttpHook";
 
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [error, setError] = useState();
+  // const [error, setError] = useState();
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
 
   const switchModeHandler = () => {
@@ -50,64 +52,66 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        setIsLoading(true);
-        const response = await fetch("http://localhost:5000/api/users/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        
+        await sendRequest(
+          "http://localhost:5000/api/users/login",
+          "POST",
+          { "Content-Type": "application/json" },
+          JSON.stringify({
             email: values.email,
             password: values.password,
           }),
-        });
+        );
 
-        const responseData = await response.json();
+        // const responseData = await response.json();
 
-        if (!response.ok) {
-          throw new Error(responseData.message);
-        }
+        // if (!response.ok) {
+        //   throw new Error(responseData.message);
+        // }
 
-        setIsLoading(false);
+        // setIsLoading(false);
         // console.log('response: ', responseData);
         dispatch({ type: "LOGIN" });
       } catch (err) {
         // console.log(err);
-        setIsLoading(false);
+        // setIsLoading(false);
+        // setError(err.message || "Something went wrong, please try again."); //trigger modal error
         setIsError(true);
-        setError(err.message || "Something went wrong, please try again."); //trigger modal error
       }
     } else {
-      try {
-        setIsLoading(true);
-        const response = await fetch("http://localhost:5000/api/users/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: values.username,
-            email: values.email,
-            password: values.password,
-          }),
-        });
+      // try {
+      //   setIsLoading(true);
+      //   const response = await fetch("http://localhost:5000/api/users/signup", {
+      //     method: "POST",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({
+      //       username: values.username,
+      //       email: values.email,
+      //       password: values.password,
+      //     }),
+      //   });
 
-        const responseData = await response.json();
+      //   const responseData = await response.json();
 
-        if (!response.ok) {
-          throw new Error(responseData.message);
-        }
+      //   if (!response.ok) {
+      //     throw new Error(responseData.message);
+      //   }
 
-        setIsLoading(false);
-        // console.log('response: ', responseData);
-        dispatch({ type: "LOGIN" });
-      } catch (err) {
-        // console.log(err);
-        setIsLoading(false);
-        setIsError(true);
-        setError(err.message || "Something went wrong, please try again."); //trigger modal error
-      }
+      //   setIsLoading(false);
+      //   // console.log('response: ', responseData);
+      //   dispatch({ type: "LOGIN" });
+      // } catch (err) {
+      //   // console.log(err);
+      //   setIsLoading(false);
+      //   setIsError(true);
+      //   setError(err.message || "Something went wrong, please try again."); //trigger modal error
+      // }
     }
   };
 
   const errorHandler = () => {
-    setError(null);
+    // setError(null);
+    clearError();
     setIsError(false);
   };
 

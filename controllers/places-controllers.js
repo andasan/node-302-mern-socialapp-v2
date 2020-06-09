@@ -25,6 +25,9 @@ exports.getPlacesByUserId = async (req,res,next) => {
     if(!userWithPlaces || userWithPlaces.length === 0){
         return next( new HttpError('Could not find places for the provided user id', 404));
     }
+
+
+    console.log('from Backend: ', userWithPlaces);
     res.json({message: 'Your places', places: userWithPlaces});
 };
 

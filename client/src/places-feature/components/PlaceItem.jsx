@@ -38,6 +38,8 @@ const customStylesB = {
 Modal.setAppElement("#modal-root");
 
 const PlaceItem = (props) => {
+
+  
   const history = useHistory();
   const [showMap, setShowMap] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
