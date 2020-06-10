@@ -38,6 +38,16 @@ exports.signup = async (req,res,next) => {
         return next(new HttpError('Email already exists', 422))
     }
 
+    try{
+        existingUser = await User.findOne({username:username});
+    }catch(err){
+        return next(new HttpError('Sign up failed, please try again', 500));
+    }
+
+    if(existingUser){
+        return next(new HttpError('Username already exists', 422))
+    }
+
     const createdUser = new User({
         username,
         email,
@@ -71,5 +81,5 @@ exports.login = async (req,res,next) => {
         return next( new HttpError('Invalid credentials', 401));
     }
 
-    res.status(200).json({message: 'Logged in!'});
+    res.status(200).json({message: 'Logged in!', user: existingUser });
 }
