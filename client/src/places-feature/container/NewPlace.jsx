@@ -45,7 +45,10 @@ const NewPlace = () => {
         })
       );
 
+<<<<<<< HEAD
       dispatch({ type: "LOAD_PLACES", payload: responseData.place });
+=======
+>>>>>>> bda33e2... create a place: succees
       history.push('/');
     } catch (err) {
       setIsError(true);
