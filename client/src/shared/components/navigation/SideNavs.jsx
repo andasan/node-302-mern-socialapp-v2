@@ -3,7 +3,7 @@ import { SideNavItem, Button, Icon } from "react-materialize";
 import { useSelector, useDispatch } from "react-redux";
 
 const SideNavs = () => {
-  const isLoggedIn = useSelector((state) => state.isLoggedIn);
+  const {isLoggedIn ,userId} = useSelector((state) => state);
   const dispatch = useDispatch();
 
   return (
@@ -18,7 +18,7 @@ const SideNavs = () => {
         userView
       />
       <SideNavItem href="/">Feed</SideNavItem>
-      {isLoggedIn && <SideNavItem href="/1/places">My Places</SideNavItem>}
+      {isLoggedIn && <SideNavItem href={`/${userId}/places`}>My Places</SideNavItem>}
       {isLoggedIn && <SideNavItem href="/places/new">Add a Place</SideNavItem>}
       <SideNavItem divider />
       {!isLoggedIn && <SideNavItem href="/auth">Auth</SideNavItem>}

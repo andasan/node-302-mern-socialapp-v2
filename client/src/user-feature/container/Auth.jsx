@@ -15,8 +15,8 @@ import { useHttpClient } from "../../shared/hooks/HttpHook";
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
   // const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   // const [error, setError] = useState();
+  const [isError, setIsError] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
 
@@ -53,7 +53,7 @@ const Auth = () => {
     if (isLoginMode) {
       try {
         
-        await sendRequest(
+        const fetchedUser = await sendRequest(
           "http://localhost:5000/api/users/login",
           "POST",
           { "Content-Type": "application/json" },
@@ -70,8 +70,8 @@ const Auth = () => {
         // }
 
         // setIsLoading(false);
-        // console.log('response: ', responseData);
-        dispatch({ type: "LOGIN" });
+        // console.log('response: ', fetchedUser );
+        dispatch({ type: "LOGIN", payload: fetchedUser.user._id });
       } catch (err) {
         // console.log(err);
         // setIsLoading(false);
@@ -106,6 +106,24 @@ const Auth = () => {
       //   setIsError(true);
       //   setError(err.message || "Something went wrong, please try again."); //trigger modal error
       // }
+      
+      //refactored signup
+      try {
+        const fetchedUser = await sendRequest(
+          "http://localhost:5000/api/users/signup",
+          "POST",
+          { "Content-Type": "application/json" },
+          JSON.stringify({
+            username: values.username,
+            email: values.email,
+            password: values.password,
+          })
+        );
+
+        dispatch({ type: "LOGIN", payload: fetchedUser.user._id });
+      } catch (err) {
+        setIsError(true);
+      }
     }
   };
 

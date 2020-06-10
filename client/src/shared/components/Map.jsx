@@ -7,8 +7,8 @@ const Map = (props) => {
     height: "400px",
   };
   const center = {
-    lat: props.coords.lat,
-    lng: props.coords.lng,
+    lat: +props.coords.lat,
+    lng: +props.coords.lng,
   };
 
   return (

@@ -1,5 +1,6 @@
 const initState = {
-    isLoggedIn: false
+    isLoggedIn: false,
+    userId: null
 }
 
 const rootReducer = (state=initState, action) => {
@@ -8,12 +9,14 @@ const rootReducer = (state=initState, action) => {
             console.log('LOGGING IN');
             return{
                 ...state,
-                isLoggedIn: true
+                isLoggedIn: true,
+                userId: action.payload
             }
         case 'LOGOUT':
             return{
                 ...state,
-                isLoggedIn: false
+                isLoggedIn: false,
+                userId: null
             }
         default:
             return state;
