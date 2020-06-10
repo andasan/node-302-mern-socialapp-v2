@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "react-loader-spinner";
 import Modal from "react-modal";
-import { useSelector } from "react-redux";
 
 import PlaceList from "../components/PlaceList";
 import {
@@ -15,7 +14,6 @@ import { useHttpClient } from "../../shared/hooks/HttpHook";
 
 const UserPlaces = () => {
   const userId = useParams().uid;
-  const { userPlaces } = useSelector(state => state);
   //   const [isLoading, setIsLoading] = useState(false);
   //   const [error, setError] = useState();
   const [isError, setIsError] = useState(false);
@@ -49,13 +47,22 @@ const UserPlaces = () => {
         const responseData = await sendRequest(
           `http://localhost:5000/api/places/user/${userId}`
         );
-        setLoadedPlaces(responseData.userWithPlaces);
+        setLoadedPlaces(responseData.userWithPlaces.places);
       } catch (err) {
         setIsError(true);
       }
     };
     fetchPlaces();
-  }, [sendRequest, userId, userPlaces]);
+  }, [sendRequest, userId]);
+
+  //through props chain, this function was executed from PlaceItem component
+  //deletedPlaceId was passed from PlaceItem component
+  //this will rerender "My Place" a list of places without the deleted place, thus we do not need to refresh the page nor call the api
+  const deletePlaceHandler = (deletedPlaceId) => {
+    setLoadedPlaces(prevPlaces => {
+        return prevPlaces.filter((place) => place._id !== deletedPlaceId)
+    });
+  };
 
   const errorHandler = () => {
     // setError(null);
@@ -95,7 +102,7 @@ const UserPlaces = () => {
         />
       </Modal>
 
-      {!isLoading && loadedPlaces && <PlaceList placesList={loadedPlaces} />}
+      {!isLoading && loadedPlaces && <PlaceList placesList={loadedPlaces} onDeletePlace={deletePlaceHandler} />}
     </>
   );
 };

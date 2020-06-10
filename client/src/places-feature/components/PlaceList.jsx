@@ -7,7 +7,7 @@ import PlaceItem from "./PlaceItem";
 const PlaceList = (props) => {
   const isLoggedIn = useSelector(state => state.isLoggedIn);
 
-  if (props.placesList.places.length === 0) {
+  if (props.placesList.length === 0) {
     return (
       <div className="row center">
         {isLoggedIn ? (
@@ -28,8 +28,8 @@ const PlaceList = (props) => {
 
   return (
     <div className="row center">
-      {props.placesList.places.map((place) => (
-        <PlaceItem key={place._id} {...place} />
+      {props.placesList.map((place) => (
+        <PlaceItem key={place._id} {...place} onDelete={props.onDeletePlace} />
       ))}
     </div>
   );

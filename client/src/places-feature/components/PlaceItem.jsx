@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Modal from "react-modal";
 import Loader from "react-loader-spinner";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import Map from "../../shared/components/Map";
 import {
@@ -13,6 +13,7 @@ import {
 } from "../../shared/components/CustomStyles";
 import { useHttpClient } from "../../shared/hooks/HttpHook";
 
+Modal.setAppElement("#modal-root");
 
 const PlaceItem = (props) => {
   const [isError, setIsError] = useState(false);
@@ -21,7 +22,6 @@ const PlaceItem = (props) => {
   const [showConfirm, setShowConfirm] = useState(false);
   
   const history = useHistory();
-  const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => state.isLoggedIn);
 
   const openMapHandler = () => setShowMap(true);
@@ -40,7 +40,7 @@ const PlaceItem = (props) => {
 
     try{
       await sendRequest(`http://localhost:5000/api/places/${props._id}`, "DELETE");
-      dispatch({ type: "PLACE_DELETED", payload: props._id });
+      props.onDelete(props._id);
     }catch(err){
       setIsError(true);
     }
