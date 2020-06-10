@@ -1,6 +1,7 @@
 const initState = {
     isLoggedIn: false,
-    userId: null
+    userId: null,
+    userPlaces: []
 }
 
 const rootReducer = (state=initState, action) => {
@@ -17,6 +18,16 @@ const rootReducer = (state=initState, action) => {
                 ...state,
                 isLoggedIn: false,
                 userId: null
+            }
+        case 'PLACE_DELETED':
+            return{
+                ...state,
+                userPlaces: state.userPlaces.filter(place => place._id !== action.payload)
+            }
+        case 'LOAD_PLACES':
+            return{
+                ...state,
+                userPlaces: [...state.userPlaces, action.payload]
             }
         default:
             return state;
