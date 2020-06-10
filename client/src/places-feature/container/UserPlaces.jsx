@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Loader from "react-loader-spinner";
 import Modal from "react-modal";
+import { useSelector } from "react-redux";
 
 import PlaceList from "../components/PlaceList";
 import {
@@ -14,6 +15,7 @@ import { useHttpClient } from "../../shared/hooks/HttpHook";
 
 const UserPlaces = () => {
   const userId = useParams().uid;
+  const { userPlaces } = useSelector(state => state);
   //   const [isLoading, setIsLoading] = useState(false);
   //   const [error, setError] = useState();
   const [isError, setIsError] = useState(false);
@@ -53,7 +55,7 @@ const UserPlaces = () => {
       }
     };
     fetchPlaces();
-  }, [sendRequest, userId]);
+  }, [sendRequest, userId, userPlaces]);
 
   const errorHandler = () => {
     // setError(null);

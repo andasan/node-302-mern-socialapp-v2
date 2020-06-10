@@ -4,7 +4,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import Loader from "react-loader-spinner";
 import Modal from "react-modal";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 import CustomTextInput from "../../shared/components/CustomTextInput";
 import {
@@ -17,6 +17,7 @@ const NewPlace = () => {
   const [isError, setIsError] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
+  const dispatch = useDispatch();
   const userId = useSelector(state => state.userId);
 
   const validationSchema = Yup.object({
@@ -32,7 +33,7 @@ const NewPlace = () => {
   const placeSubmitHandler = async (values) => {
 
     try {
-      await sendRequest(
+      const responseData = await sendRequest(
         "http://localhost:5000/api/places/",
         "POST",
         { "Content-Type": "application/json" },
@@ -44,6 +45,7 @@ const NewPlace = () => {
         })
       );
 
+      dispatch({ type: "LOAD_PLACES", payload: responseData.place });
       history.push('/');
     } catch (err) {
       setIsError(true);

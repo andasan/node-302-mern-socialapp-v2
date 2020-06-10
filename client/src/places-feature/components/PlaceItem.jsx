@@ -1,49 +1,27 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import Modal from "react-modal";
-import { useSelector } from 'react-redux';
+import Loader from "react-loader-spinner";
+import { useSelector, useDispatch } from 'react-redux';
 
 import Map from "../../shared/components/Map";
+import {
+  CustomStylesSpinner,
+  CustomStylesError,
+  CustomStylesMap,
+  CustomStylesConfirm
+} from "../../shared/components/CustomStyles";
+import { useHttpClient } from "../../shared/hooks/HttpHook";
 
-const customStylesA = {
-  overlay: {
-    backgroundColor: "rgba(0,0,0,0.75)",
-  },
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    width: "90%",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
-const customStylesB = {
-  overlay: {
-    backgroundColor: "rgba(0,0,0,0.75)",
-  },
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    width: "50%",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
-Modal.setAppElement("#modal-root");
 
 const PlaceItem = (props) => {
-
-  
-  const history = useHistory();
+  const [isError, setIsError] = useState(false);
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [showMap, setShowMap] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   
+  const history = useHistory();
+  const dispatch = useDispatch();
   const isLoggedIn = useSelector(state => state.isLoggedIn);
 
   const openMapHandler = () => setShowMap(true);
@@ -56,17 +34,59 @@ const PlaceItem = (props) => {
     history.push(`/places/${id}`);
   };
 
-  const confirmDeleteHandler = () => {
-    console.log("DELETED");
+  const confirmDeleteHandler = async () => {
+    // console.log("DELETED");
     setShowConfirm(false);
+
+    try{
+      await sendRequest(`http://localhost:5000/api/places/${props._id}`, "DELETE");
+      dispatch({ type: "PLACE_DELETED", payload: props._id });
+    }catch(err){
+      setIsError(true);
+    }
   };
+
+  const errorHandler = () => {
+    clearError();
+    setIsError(false);
+  }
 
   return (
     <>
+    <Modal
+        isOpen={isError}
+        style={CustomStylesError}
+        onRequestClose={errorHandler}
+      >
+        <div className="modal-header">
+          <h3>An error occurred:</h3>
+        </div>
+
+        <div className="modal-content">{error}</div>
+
+        <button
+          className="waves-effect wave-light btn-small deep-orange-text white right"
+          onClick={errorHandler}
+        >
+          Close
+        </button>
+      </Modal>
+
+      <Modal isOpen={isLoading} style={CustomStylesSpinner}>
+        <Loader
+          type="BallTriangle"
+          color="#FFF"
+          height={200}
+          width={200}
+          timeout={0}
+          visible={isLoading}
+        />
+      </Modal>
+
       <Modal
         isOpen={showMap}
         onRequestClose={closeMapHandler}
-        style={customStylesA}
+        style={CustomStylesMap}
         contentLabel={props.title}
       >
         <Map coords={props.location} />
@@ -76,10 +96,11 @@ const PlaceItem = (props) => {
           <button className="waves-effect waves-light btn-small deep-orange-text white right" onClick={closeMapHandler}>close</button>
         </div>
       </Modal>
+
       <Modal
         isOpen={showConfirm}
         onRequestClose={closeDeleteHandler}
-        style={customStylesB}
+        style={CustomStylesConfirm}
         contentLabel="Delete a place warning"
       >
         <div className="modal-header"><h1>Are you sure?</h1></div>
