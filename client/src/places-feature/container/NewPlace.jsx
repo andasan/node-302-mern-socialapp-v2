@@ -4,7 +4,7 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import Loader from "react-loader-spinner";
 import Modal from "react-modal";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 import CustomTextInput from "../../shared/components/CustomTextInput";
 import {

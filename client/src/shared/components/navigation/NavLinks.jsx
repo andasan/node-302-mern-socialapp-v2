@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown, Button, Divider, Icon } from "react-materialize";
+import { Button } from "react-materialize";
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 

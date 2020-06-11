@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Formik, Form } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
 import Loader from "react-loader-spinner";
@@ -11,6 +11,7 @@ import {
   CustomStylesError,
 } from "../../shared/components/CustomStyles";
 import { useHttpClient } from "../../shared/hooks/HttpHook";
+import CustomImageInput from "../../shared/components/CustomImageInput";
 
 const Auth = () => {
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -19,16 +20,38 @@ const Auth = () => {
   const [isError, setIsError] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const dispatch = useDispatch();
+  const FILE_SIZE = 3000000; //bytes
+  const SUPPORTED_FORMATS = [
+    "image/jpg",
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+  ];
 
   const switchModeHandler = () => {
     setIsLoginMode((prevMode) => !prevMode);
   };
 
-  const validationSchema = Yup.object({
+  const loginValidationSchema = Yup.object({
     username: Yup.string()
-      .concat(
-        !isLoginMode ? Yup.string().required("Username is required") : null
-      )
+      .required("Username is required")
+      .min(3, "Must be at least 3 characters long"),
+    password: Yup.string()
+      .min(6, "Password has to be longer than 6 characters!")
+      .required("Please Enter your password")
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
+      ),
+  });
+
+  const signupValidationSchema = Yup.object({
+    file: Yup.mixed()
+      .required("Avatar is required")
+      .test("fileSize", "File size too large. Image upload limit is 3MB", value => value && value.size <= FILE_SIZE)
+      .test("fileFormat", "Unsupported Format", value => value && SUPPORTED_FORMATS.includes(value.type)),
+    username: Yup.string()
+      .required("Username is required")
       .min(3, "Must be at least 3 characters long"),
     email: Yup.string().email("Email is invalid").required("Email is required"),
     password: Yup.string()
@@ -40,11 +63,7 @@ const Auth = () => {
       ),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords are not the same!")
-      .concat(
-        !isLoginMode
-          ? Yup.string().required("Password confirmation is required!")
-          : null
-      ),
+      .required("Password confirmation is required!"),
   });
 
   const authSubmitHandler = async (values) => {
@@ -52,7 +71,6 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        
         const fetchedUser = await sendRequest(
           "http://localhost:5000/api/users/login",
           "POST",
@@ -60,7 +78,7 @@ const Auth = () => {
           JSON.stringify({
             email: values.email,
             password: values.password,
-          }),
+          })
         );
 
         // const responseData = await response.json();
@@ -106,7 +124,7 @@ const Auth = () => {
       //   setIsError(true);
       //   setError(err.message || "Something went wrong, please try again."); //trigger modal error
       // }
-      
+
       //refactored signup
       try {
         const fetchedUser = await sendRequest(
