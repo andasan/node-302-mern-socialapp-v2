@@ -48,8 +48,16 @@ const Auth = () => {
   const signupValidationSchema = Yup.object({
     file: Yup.mixed()
       .required("Avatar is required")
-      .test("fileSize", "File size too large. Image upload limit is 3MB", value => value && value.size <= FILE_SIZE)
-      .test("fileFormat", "Unsupported Format", value => value && SUPPORTED_FORMATS.includes(value.type)),
+      .test(
+        "fileSize",
+        "File size too large. Image upload limit is 3MB",
+        (value) => value && value.size <= FILE_SIZE
+      )
+      .test(
+        "fileFormat",
+        "Unsupported Format",
+        (value) => value && SUPPORTED_FORMATS.includes(value.type)
+      ),
     username: Yup.string()
       .required("Username is required")
       .min(3, "Must be at least 3 characters long"),
@@ -185,12 +193,15 @@ const Auth = () => {
 
       <Formik
         initialValues={{
+          file: undefined,
           username: "",
           email: "",
           password: "",
           confirmPassword: "",
         }}
-        validationSchema={validationSchema}
+        validationSchema={
+          isLoginMode ? loginValidationSchema : signupValidationSchema
+        }
         onSubmit={(values, { setSubmitting, resetForm, submitForm }) => {
           setSubmitting(false);
           resetForm();
@@ -199,13 +210,39 @@ const Auth = () => {
           // dispatch({ type: "LOGIN" });
         }}
       >
-        {(props) => {
+        {({
+          values,
+          errors,
+          touched,
+          handleSubmit,
+          handleChange,
+          handleBlur,
+          setFieldValue,
+          isSubmitting,
+          resetForm,
+        }) => {
           return (
             <>
               <div className="row">
                 <div className="col s6 offset-s3">
                   <Form>
                     <h1>{isLoginMode ? "Sign In" : "Sign Up"}</h1>
+
+                    {!isLoginMode && (
+                    <Field
+                      name="file"
+                      component={CustomImageInput}
+                      title="Select an image"
+                      setFieldValue={setFieldValue}
+                      errorMessage={
+                        errors["file"] ? errors["file"] : undefined
+                      }
+                      touched={touched["file"]}
+                      style={{display: "flex"}}
+                      onBlur={handleBlur}
+                    />
+                    )}
+
                     {!isLoginMode && (
                       <CustomTextInput
                         label="Username"
@@ -232,9 +269,9 @@ const Auth = () => {
                     <button
                       className="waves-effect waves-light btn white-text green darken-4"
                       type="submit"
-                      disabled={props.isSubmitting}
+                      disabled={isSubmitting}
                     >
-                      {props.isSubmitting ? "Loading..." : "Submit"}
+                      {isSubmitting ? "Loading..." : "Submit"}
                       <i className="material-icons right">send</i>
                     </button>
                   </Form>
@@ -250,7 +287,7 @@ const Auth = () => {
                   type="reset"
                   onClick={() => {
                     switchModeHandler();
-                    props.resetForm();
+                    resetForm();
                   }}
                 >
                   Switch to {isLoginMode ? "Sign Up" : "Sign In"}
