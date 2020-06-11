@@ -9,7 +9,7 @@ const UserItem = (props) => {
   return (
     <div className="card white darken-1 hoverable collection">
       <div className="card-content black-text collection-item avatar">
-        <img src={props.imageUrl} alt="" className="circle" />
+        <img src={props.image} alt="" className="circle" />
         <span className="card-title">{props.username}</span>
         <p className="card-places">{props.places.length} {props.places.length <= 1 ? 'Place':'Places'}</p>
       </div>

@@ -17,7 +17,6 @@ const NewPlace = () => {
   const [isError, setIsError] = useState(false);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  const dispatch = useDispatch();
   const userId = useSelector(state => state.userId);
 
   const validationSchema = Yup.object({
@@ -33,7 +32,7 @@ const NewPlace = () => {
   const placeSubmitHandler = async (values) => {
 
     try {
-      const responseData = await sendRequest(
+      await sendRequest(
         "http://localhost:5000/api/places/",
         "POST",
         { "Content-Type": "application/json" },
@@ -45,10 +44,6 @@ const NewPlace = () => {
         })
       );
 
-<<<<<<< HEAD
-      dispatch({ type: "LOAD_PLACES", payload: responseData.place });
-=======
->>>>>>> bda33e2... create a place: succees
       history.push('/');
     } catch (err) {
       setIsError(true);
@@ -70,9 +65,7 @@ const NewPlace = () => {
         <div className="modal-header">
           <h3>An error occurred:</h3>
         </div>
-
         <div className="modal-content">{error}</div>
-
         <button
           className="waves-effect wave-light btn-small deep-orange-text white right"
           onClick={errorHandler}

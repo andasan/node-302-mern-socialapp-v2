@@ -64,6 +64,16 @@ i.icon-white {
   color: white;
 }
 
+.image-overlay::after {
+  display: block;
+  position: relative;
+  background-image: linear-gradient(to bottom, transparent 50%, rgb(46, 46, 46) 100%);
+  margin-top: -150px;
+  height: 150px;
+  width: 100%;
+  content: '';
+}
+
 #sidenavmenu-trigger{
   z-index: 998 !important;
   position: absolute;

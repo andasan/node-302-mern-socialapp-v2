@@ -29,6 +29,7 @@ app.use((error,req,res,next) => {
     res.status(error.code || 500).json({message: error.message || 'An unknown error occurred'})
 });
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(()=>{
         console.log('Connected to Database');

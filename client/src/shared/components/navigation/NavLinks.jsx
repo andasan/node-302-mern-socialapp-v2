@@ -31,27 +31,18 @@ const NavLinks = (props) => {
       )}
       {isLoggedIn && (
         <li>
-          <Dropdown
-            id="Dropdown_6"
-            trigger={<Button style={{backgroundColor: "#ffcc80",color: "#424242"}}node="button">User</Button>}
+          <Button
+            node="button"
+            style={{
+              backgroundColor: "#bf360c",
+              color: "#fff",
+            }}
+            onClick={() => {
+              dispatch({ type: "LOGOUT" });
+            }}
           >
-            <NavLink to="/">Me</NavLink>
-            <Divider />
-            {/* <button onClick={()=>{dispatch({type: 'LOGOUT'})}}>Logout</button> */}
-            <Button
-              node="button"
-              style={{
-                backgroundColor: "#bf360c",
-                color: "#fff",
-              }}
-              onClick={() => {
-                dispatch({ type: "LOGOUT" });
-              }}
-            >
-              Logout
-              <Icon right>exit_to_app</Icon>
-            </Button>
-          </Dropdown>
+            Logout
+          </Button>
         </li>
       )}
     </>
